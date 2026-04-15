@@ -1,0 +1,7 @@
+[
+  { "id": "lesson1", "title": "Lesson 1", "file": "lesson1.csv" },
+  { "id": "lesson2", "title": "Lesson 2", "file": "lesson2.csv" },
+  { "id": "lesson3", "title": "Lesson 3", "file": "lesson3.csv" },
+  { "id": "food",    "title": "Food & Drinks", "file": "lesson4.csv" },
+  { "id": "lesson5", "title": "Lesson 5", "file": "lesson5.csv" }
+]

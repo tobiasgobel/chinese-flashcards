@@ -8,125 +8,146 @@
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
+        #card, button { touch-action: manipulation; }
+        /* Fluid Chinese heading: scales with viewport but capped */
+        .chinese-fluid { font-size: clamp(2.25rem, 9vw, 3.5rem); line-height: 1.15; word-break: break-word; }
+        .english-fluid { font-size: clamp(1.5rem, 6vw, 2.25rem); line-height: 1.2; word-break: break-word; }
+        .pinyin-fluid  { font-size: clamp(1.125rem, 4.5vw, 1.5rem); line-height: 1.3; word-break: break-word; }
     </style>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-red-50 to-orange-50">
-    <div id="app" class="p-4 flex items-center justify-center min-h-screen">
+    <div id="app" class="p-3 sm:p-4 flex items-center justify-center min-h-screen">
         <div class="w-full max-w-2xl">
-            <div class="text-center mb-6">
-                <h1 class="text-3xl font-bold text-gray-800 mb-2">Chinese Flashcards</h1>
-                <p class="text-gray-600">Common phrases for beginners (Traditional)</p>
+            <div class="text-center mb-4 sm:mb-6">
+                <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-1 sm:mb-2">Chinese Flashcards</h1>
+                <p class="text-sm sm:text-base text-gray-600">Traditional Chinese — Select a lesson to revise</p>
             </div>
 
-            <div class="bg-white rounded-lg shadow-lg p-8 mb-6">
-                <div class="text-center mb-4 text-sm text-gray-500">
-                    Card <span id="currentNum">1</span> of <span id="totalNum">50</span>
-                </div>
-
-                <div id="card" class="min-h-64 flex flex-col items-center justify-center cursor-pointer p-8 rounded-lg transition-all hover:bg-gray-50">
-                    <div id="frontSide" class="text-center">
-                        <div id="chinese" class="text-5xl font-bold text-gray-800 mb-4"></div>
-                        <div id="pinyin" class="text-2xl text-gray-600"></div>
-                        <div class="mt-8 text-sm text-gray-400">Click to see English</div>
-                    </div>
-                    <div id="backSide" class="text-center hidden">
-                        <div id="english" class="text-4xl font-semibold text-blue-600"></div>
-                        <div class="mt-8 text-sm text-gray-400">Click to see Chinese</div>
-                    </div>
-                </div>
-
-                <div class="w-full bg-gray-200 h-2 rounded-full mt-6">
-                    <div id="progress" class="bg-red-500 h-2 rounded-full transition-all" style="width: 2%"></div>
-                </div>
+            <!-- Lesson Selector Screen -->
+            <div id="selectorScreen" class="bg-white rounded-lg shadow-lg p-5 sm:p-8">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Choose a deck</h2>
+                <div id="lessonList" class="grid gap-3 mb-4"></div>
+                <button id="allBtn" class="w-full bg-gradient-to-r from-red-500 to-orange-500 text-white font-semibold py-4 px-6 rounded-lg shadow-md hover:shadow-lg transition-all hover:scale-[1.02]">
+                    Revise All (mixed)
+                </button>
+                <div id="loadError" class="mt-4 text-sm text-red-600 hidden"></div>
+                <p class="mt-4 text-xs text-gray-500 text-center">
+                    Decks are loaded from the lesson CSV files in this repo. To add words, edit the CSVs and push to GitHub — the page will read the updated files on reload. (For local testing, serve the folder via a local server rather than opening the file directly.)
+                </p>
             </div>
 
-            <div class="flex items-center justify-center gap-4">
-                <button id="prevBtn" class="bg-white p-4 rounded-full shadow-md hover:shadow-lg transition-all hover:scale-105">
-                    <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                    </svg>
-                </button>
+            <!-- Flashcard Screen -->
+            <div id="cardScreen" class="hidden">
+                <div class="bg-white rounded-lg shadow-lg p-4 sm:p-8 mb-4 sm:mb-6">
+                    <div class="flex items-center justify-between gap-2 mb-3 sm:mb-4 text-xs sm:text-sm text-gray-500">
+                        <button id="backBtn" class="text-gray-600 hover:text-gray-900 font-medium whitespace-nowrap">&larr; Decks</button>
+                        <span id="deckTitle" class="font-medium text-gray-700 truncate"></span>
+                        <span class="whitespace-nowrap"><span id="currentNum">1</span>/<span id="totalNum">0</span></span>
+                    </div>
 
-                <button id="shuffleBtn" class="bg-white px-6 py-3 rounded-full shadow-md hover:shadow-lg transition-all hover:scale-105 flex items-center gap-2">
-                    <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                    </svg>
-                    <span class="text-gray-700 font-medium">Shuffle</span>
-                </button>
+                    <div id="card" class="min-h-[16rem] sm:min-h-64 flex flex-col items-center justify-center cursor-pointer p-4 sm:p-8 rounded-lg transition-all hover:bg-gray-50 select-none">
+                        <div id="frontSide" class="text-center w-full">
+                            <div id="chinese" class="chinese-fluid font-bold text-gray-800 mb-3 sm:mb-4"></div>
+                            <div id="pinyin" class="pinyin-fluid text-gray-600 invisible"></div>
+                            <button id="hintBtn" type="button" class="mt-4 sm:mt-6 inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-gray-100 hover:bg-gray-200 active:scale-95 text-xs sm:text-sm text-gray-700 font-medium transition-all">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <span id="hintLabel">Show pinyin</span>
+                            </button>
+                            <div class="mt-4 sm:mt-6 text-xs sm:text-sm text-gray-400">Tap card to see English</div>
+                        </div>
+                        <div id="backSide" class="text-center hidden w-full">
+                            <div id="english" class="english-fluid font-semibold text-blue-600"></div>
+                            <div id="pinyinBack" class="pinyin-fluid text-gray-500 mt-3"></div>
+                            <div class="mt-6 sm:mt-8 text-xs sm:text-sm text-gray-400">Tap to see Chinese</div>
+                        </div>
+                    </div>
 
-                <button id="nextBtn" class="bg-white p-4 rounded-full shadow-md hover:shadow-lg transition-all hover:scale-105">
-                    <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                    </svg>
-                </button>
+                    <div class="w-full bg-gray-200 h-2 rounded-full mt-4 sm:mt-6">
+                        <div id="progress" class="bg-red-500 h-2 rounded-full transition-all" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-center gap-3 sm:gap-4">
+                    <button id="prevBtn" aria-label="Previous" class="bg-white p-3 sm:p-4 rounded-full shadow-md hover:shadow-lg active:scale-95 transition-all">
+                        <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                    </button>
+
+                    <button id="shuffleBtn" class="bg-white px-4 sm:px-6 py-3 rounded-full shadow-md hover:shadow-lg active:scale-95 transition-all flex items-center gap-2">
+                        <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                        <span class="text-gray-700 font-medium text-sm sm:text-base">Shuffle</span>
+                    </button>
+
+                    <button id="nextBtn" aria-label="Next" class="bg-white p-3 sm:p-4 rounded-full shadow-md hover:shadow-lg active:scale-95 transition-all">
+                        <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        const flashcards = [
-            { chinese: "你好", pinyin: "nǐ hǎo", english: "Hello" },
-            { chinese: "謝謝", pinyin: "xièxie", english: "Thank you" },
-            { chinese: "再見", pinyin: "zàijiàn", english: "Goodbye" },
-            { chinese: "對不起", pinyin: "duìbuqǐ", english: "Sorry / Excuse me" },
-            { chinese: "不好意思", pinyin: "bù hǎoyìsi", english: "Excuse me (polite)" },
-            { chinese: "是", pinyin: "shì", english: "Yes" },
-            { chinese: "不是", pinyin: "bú shì", english: "No / Not" },
-            { chinese: "請", pinyin: "qǐng", english: "Please" },
-            { chinese: "我叫...", pinyin: "wǒ jiào...", english: "My name is..." },
-            { chinese: "你叫什麼名字？", pinyin: "nǐ jiào shénme míngzi?", english: "What is your name?" },
-            { chinese: "很高興認識你", pinyin: "hěn gāoxìng rènshi nǐ", english: "Nice to meet you" },
-            { chinese: "你好嗎？", pinyin: "nǐ hǎo ma?", english: "How are you?" },
-            { chinese: "我很好", pinyin: "wǒ hěn hǎo", english: "I'm fine" },
-            { chinese: "多少錢？", pinyin: "duōshao qián?", english: "How much?" },
-            { chinese: "這個", pinyin: "zhège", english: "This one" },
-            { chinese: "那個", pinyin: "nàge", english: "That one" },
-            { chinese: "我要...", pinyin: "wǒ yào...", english: "I want..." },
-            { chinese: "我不要", pinyin: "wǒ bú yào", english: "I don't want" },
-            { chinese: "可以", pinyin: "kěyǐ", english: "Can / May / OK" },
-            { chinese: "不可以", pinyin: "bù kěyǐ", english: "Cannot / Not allowed" },
-            { chinese: "在哪裡？", pinyin: "zài nǎlǐ?", english: "Where is it?" },
-            { chinese: "廁所在哪裡？", pinyin: "cèsuǒ zài nǎlǐ?", english: "Where is the bathroom?" },
-            { chinese: "我不懂", pinyin: "wǒ bù dǒng", english: "I don't understand" },
-            { chinese: "你會說英語嗎？", pinyin: "nǐ huì shuō yīngyǔ ma?", english: "Do you speak English?" },
-            { chinese: "請再說一遍", pinyin: "qǐng zài shuō yí biàn", english: "Please say it again" },
-            { chinese: "慢一點", pinyin: "màn yìdiǎn", english: "Slower please" },
-            { chinese: "水", pinyin: "shuǐ", english: "Water" },
-            { chinese: "米飯", pinyin: "mǐfàn", english: "Rice" },
-            { chinese: "麵條", pinyin: "miàntiáo", english: "Noodles" },
-            { chinese: "好吃", pinyin: "hǎochī", english: "Delicious" },
-            { chinese: "買單", pinyin: "mǎidān", english: "Check please / Bill" },
-            { chinese: "太貴了", pinyin: "tài guì le", english: "Too expensive" },
-            { chinese: "便宜一點", pinyin: "piányi yìdiǎn", english: "A bit cheaper" },
-            { chinese: "左", pinyin: "zuǒ", english: "Left" },
-            { chinese: "右", pinyin: "yòu", english: "Right" },
-            { chinese: "直走", pinyin: "zhí zǒu", english: "Go straight" },
-            { chinese: "幫助", pinyin: "bāngzhù", english: "Help" },
-            { chinese: "救命", pinyin: "jiùmìng", english: "Help! (emergency)" },
-            { chinese: "一", pinyin: "yī", english: "One" },
-            { chinese: "二", pinyin: "èr", english: "Two" },
-            { chinese: "三", pinyin: "sān", english: "Three" },
-            { chinese: "四", pinyin: "sì", english: "Four" },
-            { chinese: "五", pinyin: "wǔ", english: "Five" },
-            { chinese: "六", pinyin: "liù", english: "Six" },
-            { chinese: "七", pinyin: "qī", english: "Seven" },
-            { chinese: "八", pinyin: "bā", english: "Eight" },
-            { chinese: "九", pinyin: "jiǔ", english: "Nine" },
-            { chinese: "十", pinyin: "shí", english: "Ten" },
-            { chinese: "早上好", pinyin: "zǎoshang hǎo", english: "Good morning" },
-            { chinese: "晚上好", pinyin: "wǎnshang hǎo", english: "Good evening" }
-        ];
+        // ---- Simple CSV parser (handles quoted fields, commas, escaped quotes) ----
+        function parseCSV(text) {
+            const rows = [];
+            let cur = [], field = '', inQuotes = false;
+            for (let i = 0; i < text.length; i++) {
+                const c = text[i];
+                if (inQuotes) {
+                    if (c === '"') {
+                        if (text[i + 1] === '"') { field += '"'; i++; }
+                        else { inQuotes = false; }
+                    } else { field += c; }
+                } else {
+                    if (c === '"') { inQuotes = true; }
+                    else if (c === ',') { cur.push(field); field = ''; }
+                    else if (c === '\n') { cur.push(field); rows.push(cur); cur = []; field = ''; }
+                    else if (c === '\r') { /* skip */ }
+                    else { field += c; }
+                }
+            }
+            if (field.length > 0 || cur.length > 0) { cur.push(field); rows.push(cur); }
+            if (!rows.length) return [];
+            const headers = rows.shift().map(h => h.trim().toLowerCase());
+            return rows
+                .filter(r => r.some(v => v && v.trim() !== ''))
+                .map(r => {
+                    const obj = {};
+                    headers.forEach((h, i) => obj[h] = (r[i] || '').trim());
+                    return obj;
+                });
+        }
 
-        let cards = [...flashcards];
+        // ---- State ----
+        let lessons = [];
+        let cards = [];
         let currentIndex = 0;
         let isFlipped = false;
+
+        // ---- DOM ----
+        const selectorScreen = document.getElementById('selectorScreen');
+        const cardScreen = document.getElementById('cardScreen');
+        const lessonList = document.getElementById('lessonList');
+        const allBtn = document.getElementById('allBtn');
+        const loadError = document.getElementById('loadError');
+        const backBtn = document.getElementById('backBtn');
+        const deckTitle = document.getElementById('deckTitle');
 
         const card = document.getElementById('card');
         const frontSide = document.getElementById('frontSide');
         const backSide = document.getElementById('backSide');
         const chineseEl = document.getElementById('chinese');
         const pinyinEl = document.getElementById('pinyin');
+        const pinyinBackEl = document.getElementById('pinyinBack');
+        const hintBtn = document.getElementById('hintBtn');
+        const hintLabel = document.getElementById('hintLabel');
         const englishEl = document.getElementById('english');
         const currentNumEl = document.getElementById('currentNum');
         const totalNumEl = document.getElementById('totalNum');
@@ -135,25 +156,124 @@
         const nextBtn = document.getElementById('nextBtn');
         const shuffleBtn = document.getElementById('shuffleBtn');
 
+        // ---- Loading ----
+        async function loadLessons() {
+            try {
+                const res = await fetch('lessons.json');
+                if (!res.ok) throw new Error('Could not load lessons.json');
+                lessons = await res.json();
+                renderLessonList();
+            } catch (err) {
+                loadError.textContent = 'Could not load lessons.json — ' + err.message;
+                loadError.classList.remove('hidden');
+            }
+        }
+
+        async function loadLessonCards(lesson) {
+            const res = await fetch(lesson.file);
+            if (!res.ok) throw new Error('Could not load ' + lesson.file);
+            const text = await res.text();
+            return parseCSV(text);
+        }
+
+        async function loadAllCards() {
+            const all = [];
+            for (const l of lessons) {
+                try { all.push(...(await loadLessonCards(l))); } catch (e) { /* skip */ }
+            }
+            return all;
+        }
+
+        // ---- Rendering ----
+        function renderLessonList() {
+            lessonList.innerHTML = '';
+            lessons.forEach(l => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full bg-white border-2 border-gray-200 hover:border-red-400 hover:bg-red-50 text-gray-800 font-medium py-4 px-6 rounded-lg transition-all text-left flex items-center justify-between';
+                btn.innerHTML = `<span>${l.title}</span><span class="text-gray-400">&rarr;</span>`;
+                btn.addEventListener('click', () => startLesson(l));
+                lessonList.appendChild(btn);
+            });
+        }
+
+        async function startLesson(lesson) {
+            try {
+                const data = await loadLessonCards(lesson);
+                if (!data.length) {
+                    alert(`${lesson.title} is empty. Add words to ${lesson.file} first.`);
+                    return;
+                }
+                cards = data;
+                deckTitle.textContent = lesson.title;
+                showCards();
+            } catch (err) {
+                alert('Could not load ' + lesson.file + ' — ' + err.message);
+            }
+        }
+
+        async function startAll() {
+            try {
+                const data = await loadAllCards();
+                if (!data.length) {
+                    alert('No words found in any lesson yet. Add entries to the lesson CSV files.');
+                    return;
+                }
+                cards = data.sort(() => Math.random() - 0.5);
+                deckTitle.textContent = 'All (mixed)';
+                showCards();
+            } catch (err) {
+                alert('Could not load lessons — ' + err.message);
+            }
+        }
+
+        function showCards() {
+            currentIndex = 0;
+            isFlipped = false;
+            selectorScreen.classList.add('hidden');
+            cardScreen.classList.remove('hidden');
+            frontSide.classList.remove('hidden');
+            backSide.classList.add('hidden');
+            updateCard();
+        }
+
+        function backToSelector() {
+            cardScreen.classList.add('hidden');
+            selectorScreen.classList.remove('hidden');
+        }
+
         function updateCard() {
             const current = cards[currentIndex];
-            chineseEl.textContent = current.chinese;
-            pinyinEl.textContent = current.pinyin;
-            englishEl.textContent = current.english;
+            chineseEl.textContent = current.chinese || '';
+            pinyinEl.textContent = current.pinyin || '';
+            pinyinBackEl.textContent = current.pinyin || '';
+            englishEl.textContent = current.english || '';
             currentNumEl.textContent = currentIndex + 1;
             totalNumEl.textContent = cards.length;
             progressEl.style.width = `${((currentIndex + 1) / cards.length) * 100}%`;
+            hidePinyin();
+        }
+
+        function hidePinyin() {
+            pinyinEl.classList.add('invisible');
+            hintBtn.classList.remove('hidden');
+            hintLabel.textContent = 'Show pinyin';
+        }
+
+        function togglePinyin() {
+            const hidden = pinyinEl.classList.contains('invisible');
+            if (hidden) {
+                pinyinEl.classList.remove('invisible');
+                hintLabel.textContent = 'Hide pinyin';
+            } else {
+                pinyinEl.classList.add('invisible');
+                hintLabel.textContent = 'Show pinyin';
+            }
         }
 
         function flipCard() {
             isFlipped = !isFlipped;
-            if (isFlipped) {
-                frontSide.classList.add('hidden');
-                backSide.classList.remove('hidden');
-            } else {
-                frontSide.classList.remove('hidden');
-                backSide.classList.add('hidden');
-            }
+            frontSide.classList.toggle('hidden', isFlipped);
+            backSide.classList.toggle('hidden', !isFlipped);
         }
 
         function nextCard() {
@@ -173,7 +293,7 @@
         }
 
         function shuffle() {
-            cards = [...flashcards].sort(() => Math.random() - 0.5);
+            cards = [...cards].sort(() => Math.random() - 0.5);
             currentIndex = 0;
             isFlipped = false;
             frontSide.classList.remove('hidden');
@@ -181,23 +301,56 @@
             updateCard();
         }
 
-        card.addEventListener('click', flipCard);
+        // ---- Events ----
+        let suppressClick = false;
+        card.addEventListener('click', () => {
+            if (suppressClick) { suppressClick = false; return; }
+            flipCard();
+        });
+        hintBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            togglePinyin();
+        });
         nextBtn.addEventListener('click', nextCard);
         prevBtn.addEventListener('click', prevCard);
         shuffleBtn.addEventListener('click', shuffle);
+        backBtn.addEventListener('click', backToSelector);
+        allBtn.addEventListener('click', startAll);
 
-        // Keyboard navigation
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight') nextCard();
-            if (e.key === 'ArrowLeft') prevCard();
-            if (e.key === ' ') {
-                e.preventDefault();
-                flipCard();
+        // Swipe gestures for mobile
+        let touchStartX = 0, touchStartY = 0, touchMoved = false;
+        card.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            touchMoved = false;
+        }, { passive: true });
+        card.addEventListener('touchmove', (e) => {
+            const dx = Math.abs(e.touches[0].clientX - touchStartX);
+            const dy = Math.abs(e.touches[0].clientY - touchStartY);
+            if (dx > 10 || dy > 10) touchMoved = true;
+        }, { passive: true });
+        card.addEventListener('touchend', (e) => {
+            const dx = e.changedTouches[0].clientX - touchStartX;
+            const dy = e.changedTouches[0].clientY - touchStartY;
+            if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+                suppressClick = true;
+                if (dx < 0) nextCard(); else prevCard();
+            } else if (touchMoved) {
+                suppressClick = true;
             }
         });
 
-        // Initialize
-        updateCard();
+        document.addEventListener('keydown', (e) => {
+            if (cardScreen.classList.contains('hidden')) return;
+            if (e.key === 'ArrowRight') nextCard();
+            if (e.key === 'ArrowLeft') prevCard();
+            if (e.key === ' ') { e.preventDefault(); flipCard(); }
+            if (e.key === 'p' || e.key === 'P') togglePinyin();
+            if (e.key === 'Escape') backToSelector();
+        });
+
+        // ---- Init ----
+        loadLessons();
     </script>
 </body>
 </html>
