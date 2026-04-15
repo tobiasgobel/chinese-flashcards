@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chinese Flashcards</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-red-50 to-orange-50">
+    <div id="app" class="p-4 flex items-center justify-center min-h-screen">
+        <div class="w-full max-w-2xl">
+            <div class="text-center mb-6">
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">Chinese Flashcards</h1>
+                <p class="text-gray-600">Common phrases for beginners (Traditional)</p>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-lg p-8 mb-6">
+                <div class="text-center mb-4 text-sm text-gray-500">
+                    Card <span id="currentNum">1</span> of <span id="totalNum">50</span>
+                </div>
+
+                <div id="card" class="min-h-64 flex flex-col items-center justify-center cursor-pointer p-8 rounded-lg transition-all hover:bg-gray-50">
+                    <div id="frontSide" class="text-center">
+                        <div id="chinese" class="text-5xl font-bold text-gray-800 mb-4"></div>
+                        <div id="pinyin" class="text-2xl text-gray-600"></div>
+                        <div class="mt-8 text-sm text-gray-400">Click to see English</div>
+                    </div>
+                    <div id="backSide" class="text-center hidden">
+                        <div id="english" class="text-4xl font-semibold text-blue-600"></div>
+                        <div class="mt-8 text-sm text-gray-400">Click to see Chinese</div>
+                    </div>
+                </div>
+
+                <div class="w-full bg-gray-200 h-2 rounded-full mt-6">
+                    <div id="progress" class="bg-red-500 h-2 rounded-full transition-all" style="width: 2%"></div>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-center gap-4">
+                <button id="prevBtn" class="bg-white p-4 rounded-full shadow-md hover:shadow-lg transition-all hover:scale-105">
+                    <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </button>
+
+                <button id="shuffleBtn" class="bg-white px-6 py-3 rounded-full shadow-md hover:shadow-lg transition-all hover:scale-105 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    <span class="text-gray-700 font-medium">Shuffle</span>
+                </button>
+
+                <button id="nextBtn" class="bg-white p-4 rounded-full shadow-md hover:shadow-lg transition-all hover:scale-105">
+                    <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const flashcards = [
+            { chinese: "你好", pinyin: "nǐ hǎo", english: "Hello" },
+            { chinese: "謝謝", pinyin: "xièxie", english: "Thank you" },
+            { chinese: "再見", pinyin: "zàijiàn", english: "Goodbye" },
+            { chinese: "對不起", pinyin: "duìbuqǐ", english: "Sorry / Excuse me" },
+            { chinese: "不好意思", pinyin: "bù hǎoyìsi", english: "Excuse me (polite)" },
+            { chinese: "是", pinyin: "shì", english: "Yes" },
+            { chinese: "不是", pinyin: "bú shì", english: "No / Not" },
+            { chinese: "請", pinyin: "qǐng", english: "Please" },
+            { chinese: "我叫...", pinyin: "wǒ jiào...", english: "My name is..." },
+            { chinese: "你叫什麼名字？", pinyin: "nǐ jiào shénme míngzi?", english: "What is your name?" },
+            { chinese: "很高興認識你", pinyin: "hěn gāoxìng rènshi nǐ", english: "Nice to meet you" },
+            { chinese: "你好嗎？", pinyin: "nǐ hǎo ma?", english: "How are you?" },
+            { chinese: "我很好", pinyin: "wǒ hěn hǎo", english: "I'm fine" },
+            { chinese: "多少錢？", pinyin: "duōshao qián?", english: "How much?" },
+            { chinese: "這個", pinyin: "zhège", english: "This one" },
+            { chinese: "那個", pinyin: "nàge", english: "That one" },
+            { chinese: "我要...", pinyin: "wǒ yào...", english: "I want..." },
+            { chinese: "我不要", pinyin: "wǒ bú yào", english: "I don't want" },
+            { chinese: "可以", pinyin: "kěyǐ", english: "Can / May / OK" },
+            { chinese: "不可以", pinyin: "bù kěyǐ", english: "Cannot / Not allowed" },
+            { chinese: "在哪裡？", pinyin: "zài nǎlǐ?", english: "Where is it?" },
+            { chinese: "廁所在哪裡？", pinyin: "cèsuǒ zài nǎlǐ?", english: "Where is the bathroom?" },
+            { chinese: "我不懂", pinyin: "wǒ bù dǒng", english: "I don't understand" },
+            { chinese: "你會說英語嗎？", pinyin: "nǐ huì shuō yīngyǔ ma?", english: "Do you speak English?" },
+            { chinese: "請再說一遍", pinyin: "qǐng zài shuō yí biàn", english: "Please say it again" },
+            { chinese: "慢一點", pinyin: "màn yìdiǎn", english: "Slower please" },
+            { chinese: "水", pinyin: "shuǐ", english: "Water" },
+            { chinese: "米飯", pinyin: "mǐfàn", english: "Rice" },
+            { chinese: "麵條", pinyin: "miàntiáo", english: "Noodles" },
+            { chinese: "好吃", pinyin: "hǎochī", english: "Delicious" },
+            { chinese: "買單", pinyin: "mǎidān", english: "Check please / Bill" },
+            { chinese: "太貴了", pinyin: "tài guì le", english: "Too expensive" },
+            { chinese: "便宜一點", pinyin: "piányi yìdiǎn", english: "A bit cheaper" },
+            { chinese: "左", pinyin: "zuǒ", english: "Left" },
+            { chinese: "右", pinyin: "yòu", english: "Right" },
+            { chinese: "直走", pinyin: "zhí zǒu", english: "Go straight" },
+            { chinese: "幫助", pinyin: "bāngzhù", english: "Help" },
+            { chinese: "救命", pinyin: "jiùmìng", english: "Help! (emergency)" },
+            { chinese: "一", pinyin: "yī", english: "One" },
+            { chinese: "二", pinyin: "èr", english: "Two" },
+            { chinese: "三", pinyin: "sān", english: "Three" },
+            { chinese: "四", pinyin: "sì", english: "Four" },
+            { chinese: "五", pinyin: "wǔ", english: "Five" },
+            { chinese: "六", pinyin: "liù", english: "Six" },
+            { chinese: "七", pinyin: "qī", english: "Seven" },
+            { chinese: "八", pinyin: "bā", english: "Eight" },
+            { chinese: "九", pinyin: "jiǔ", english: "Nine" },
+            { chinese: "十", pinyin: "shí", english: "Ten" },
+            { chinese: "早上好", pinyin: "zǎoshang hǎo", english: "Good morning" },
+            { chinese: "晚上好", pinyin: "wǎnshang hǎo", english: "Good evening" }
+        ];
+
+        let cards = [...flashcards];
+        let currentIndex = 0;
+        let isFlipped = false;
+
+        const card = document.getElementById('card');
+        const frontSide = document.getElementById('frontSide');
+        const backSide = document.getElementById('backSide');
+        const chineseEl = document.getElementById('chinese');
+        const pinyinEl = document.getElementById('pinyin');
+        const englishEl = document.getElementById('english');
+        const currentNumEl = document.getElementById('currentNum');
+        const totalNumEl = document.getElementById('totalNum');
+        const progressEl = document.getElementById('progress');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const shuffleBtn = document.getElementById('shuffleBtn');
+
+        function updateCard() {
+            const current = cards[currentIndex];
+            chineseEl.textContent = current.chinese;
+            pinyinEl.textContent = current.pinyin;
+            englishEl.textContent = current.english;
+            currentNumEl.textContent = currentIndex + 1;
+            totalNumEl.textContent = cards.length;
+            progressEl.style.width = `${((currentIndex + 1) / cards.length) * 100}%`;
+        }
+
+        function flipCard() {
+            isFlipped = !isFlipped;
+            if (isFlipped) {
+                frontSide.classList.add('hidden');
+                backSide.classList.remove('hidden');
+            } else {
+                frontSide.classList.remove('hidden');
+                backSide.classList.add('hidden');
+            }
+        }
+
+        function nextCard() {
+            currentIndex = (currentIndex + 1) % cards.length;
+            isFlipped = false;
+            frontSide.classList.remove('hidden');
+            backSide.classList.add('hidden');
+            updateCard();
+        }
+
+        function prevCard() {
+            currentIndex = (currentIndex - 1 + cards.length) % cards.length;
+            isFlipped = false;
+            frontSide.classList.remove('hidden');
+            backSide.classList.add('hidden');
+            updateCard();
+        }
+
+        function shuffle() {
+            cards = [...flashcards].sort(() => Math.random() - 0.5);
+            currentIndex = 0;
+            isFlipped = false;
+            frontSide.classList.remove('hidden');
+            backSide.classList.add('hidden');
+            updateCard();
+        }
+
+        card.addEventListener('click', flipCard);
+        nextBtn.addEventListener('click', nextCard);
+        prevBtn.addEventListener('click', prevCard);
+        shuffleBtn.addEventListener('click', shuffle);
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextCard();
+            if (e.key === 'ArrowLeft') prevCard();
+            if (e.key === ' ') {
+                e.preventDefault();
+                flipCard();
+            }
+        });
+
+        // Initialize
+        updateCard();
+    </script>
+</body>
+</html>
