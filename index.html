@@ -51,15 +51,27 @@
                         <div id="frontSide" class="text-center w-full">
                             <div id="chinese" class="chinese-fluid font-bold text-gray-800 mb-3 sm:mb-4"></div>
                             <div id="pinyin" class="pinyin-fluid text-gray-600 invisible"></div>
-                            <button id="hintBtn" type="button" class="mt-4 sm:mt-6 inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-gray-100 hover:bg-gray-200 active:scale-95 text-xs sm:text-sm text-gray-700 font-medium transition-all">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                <span id="hintLabel">Show pinyin</span>
-                            </button>
+                            <div class="mt-4 sm:mt-6 flex items-center justify-center gap-2">
+                                <button id="hintBtn" type="button" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-gray-100 hover:bg-gray-200 active:scale-95 text-xs sm:text-sm text-gray-700 font-medium transition-all">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span id="hintLabel">Show pinyin</span>
+                                </button>
+                                <button id="speakBtnFront" type="button" aria-label="Play pronunciation" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-gray-100 hover:bg-gray-200 active:scale-95 text-xs sm:text-sm text-gray-700 font-medium transition-all">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M17.657 6.343a8 8 0 010 11.314M5 9v6h4l5 4V5L9 9H5z"></path></svg>
+                                    <span>Play</span>
+                                </button>
+                            </div>
                             <div class="mt-4 sm:mt-6 text-xs sm:text-sm text-gray-400">Tap card to see English</div>
                         </div>
                         <div id="backSide" class="text-center hidden w-full">
                             <div id="english" class="english-fluid font-semibold text-blue-600"></div>
                             <div id="pinyinBack" class="pinyin-fluid text-gray-500 mt-3"></div>
+                            <div class="mt-4 sm:mt-6 flex items-center justify-center">
+                                <button id="speakBtnBack" type="button" aria-label="Play pronunciation" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-gray-100 hover:bg-gray-200 active:scale-95 text-xs sm:text-sm text-gray-700 font-medium transition-all">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M17.657 6.343a8 8 0 010 11.314M5 9v6h4l5 4V5L9 9H5z"></path></svg>
+                                    <span>Play</span>
+                                </button>
+                            </div>
                             <div class="mt-6 sm:mt-8 text-xs sm:text-sm text-gray-400">Tap to see Chinese</div>
                         </div>
                     </div>
@@ -311,6 +323,37 @@
             e.stopPropagation();
             togglePinyin();
         });
+
+        // ---- Speech synthesis ----
+        function pickVoice() {
+            const voices = window.speechSynthesis.getVoices();
+            // Prefer Taiwanese Mandarin, fall back to any Chinese voice
+            return voices.find(v => /zh[-_]TW/i.test(v.lang))
+                || voices.find(v => /zh[-_]HK/i.test(v.lang))
+                || voices.find(v => /^zh/i.test(v.lang))
+                || null;
+        }
+        function speakChinese() {
+            if (!('speechSynthesis' in window)) {
+                alert('Your browser does not support speech synthesis.');
+                return;
+            }
+            const text = cards[currentIndex] && cards[currentIndex].chinese;
+            if (!text) return;
+            window.speechSynthesis.cancel();
+            const u = new SpeechSynthesisUtterance(text);
+            const v = pickVoice();
+            if (v) u.voice = v;
+            u.lang = (v && v.lang) || 'zh-TW';
+            u.rate = 0.85;
+            window.speechSynthesis.speak(u);
+        }
+        // Warm voice list (some browsers load voices async)
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = () => {};
+        }
+        document.getElementById('speakBtnFront').addEventListener('click', (e) => { e.stopPropagation(); speakChinese(); });
+        document.getElementById('speakBtnBack').addEventListener('click', (e) => { e.stopPropagation(); speakChinese(); });
         nextBtn.addEventListener('click', nextCard);
         prevBtn.addEventListener('click', prevCard);
         shuffleBtn.addEventListener('click', shuffle);
@@ -346,6 +389,7 @@
             if (e.key === 'ArrowLeft') prevCard();
             if (e.key === ' ') { e.preventDefault(); flipCard(); }
             if (e.key === 'p' || e.key === 'P') togglePinyin();
+            if (e.key === 's' || e.key === 'S') speakChinese();
             if (e.key === 'Escape') backToSelector();
         });
 
