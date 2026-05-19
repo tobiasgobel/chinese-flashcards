@@ -60,6 +60,9 @@
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M17.657 6.343a8 8 0 010 11.314M5 9v6h4l5 4V5L9 9H5z"></path></svg>
                                     <span>Play</span>
                                 </button>
+                                <button id="speedToggle" type="button" aria-label="Toggle speed" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-gray-100 hover:bg-gray-200 active:scale-95 text-xs sm:text-sm font-medium transition-all" title="Toggle speech speed">
+                                    <span id="speedIcon">🐇</span>
+                                </button>
                             </div>
                             <div class="mt-4 sm:mt-6 text-xs sm:text-sm text-gray-400">Tap card to see English</div>
                         </div>
@@ -325,6 +328,16 @@
         });
 
         // ---- Speech synthesis ----
+        let slowMode = false;
+        const speedToggle = document.getElementById('speedToggle');
+        const speedIcon = document.getElementById('speedIcon');
+        speedToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            slowMode = !slowMode;
+            speedIcon.textContent = slowMode ? '🐢' : '🐇';
+            speedToggle.title = slowMode ? 'Slow speed — tap to go faster' : 'Normal speed — tap to go slower';
+        });
+
         function pickVoice() {
             const voices = window.speechSynthesis.getVoices();
             // Prefer Taiwanese Mandarin, fall back to any Chinese voice
@@ -345,7 +358,7 @@
             const v = pickVoice();
             if (v) u.voice = v;
             u.lang = (v && v.lang) || 'zh-TW';
-            u.rate = 0.85;
+            u.rate = slowMode ? 0.5 : 0.85;
             window.speechSynthesis.speak(u);
         }
         // Warm voice list (some browsers load voices async)
