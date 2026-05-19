@@ -1,7 +1,8 @@
 [
-  { "id": "lesson1", "title": "Lesson 1", "file": "lesson1.csv" },
-  { "id": "lesson2", "title": "Lesson 2", "file": "lesson2.csv" },
-  { "id": "lesson3", "title": "Lesson 3", "file": "lesson3.csv" },
-  { "id": "food",    "title": "Food & Drinks", "file": "lesson4.csv" },
-  { "id": "lesson5", "title": "Lesson 5", "file": "lesson5.csv" }
+  { "id": "lesson1", "title": "Lesson 1 — 您貴姓", "file": "lesson1.csv" },
+  { "id": "lesson2", "title": "Lesson 2 — 早，您好", "file": "lesson2.csv" },
+  { "id": "lesson3", "title": "Lesson 3 — 我喜歡看電影", "file": "lesson3.csv" },
+  { "id": "lesson4", "title": "Lesson 4 — 這枝筆多少錢", "file": "lesson4_textbook.csv" },
+  { "id": "lesson5", "title": "Lesson 5 — 我家有五個人", "file": "lesson5.csv" },
+  { "id": "food",    "title": "Food & Drinks", "file": "lesson4.csv" }
 ]
