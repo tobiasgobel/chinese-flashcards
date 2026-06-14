@@ -5,5 +5,6 @@
   { "id": "lesson4", "title": "Lesson 4 — 這枝筆多少錢", "file": "lesson4_textbook.csv" },
   { "id": "lesson5", "title": "Lesson 5 — 我家有五個人", "file": "lesson5.csv" },
   { "id": "lesson6", "title": "Lesson 6 — 我想買一個新照相機", "file": "lesson6.csv" },
-  { "id": "food",    "title": "Food & Drinks", "file": "lesson4.csv" }
+  { "id": "food",    "title": "Food & Drinks", "file": "lesson4.csv" },
+  { "id": "common500", "title": "500 Most Common Words", "file": "common500.csv" }
 ]

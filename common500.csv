@@ -1,0 +1,501 @@
+chinese,pinyin,english
+我,wǒ,I / me
+你,nǐ,you
+他,tā,he / him
+她,tā,she / her
+我們,wǒmen,we / us
+你們,nǐmen,you (plural)
+他們,tāmen,they / them
+這,zhè,this
+那,nà,that
+這個,zhège,this one
+那個,nàge,that one
+這裡,zhèlǐ,here
+那裡,nàlǐ,there
+哪裡,nǎlǐ,where
+什麼,shénme,what
+誰,shéi,who
+為什麼,wèishénme,why
+怎麼,zěnme,how
+怎麼樣,zěnmeyàng,how about it / how is it
+多少,duōshǎo,how much / how many
+幾,jǐ,how many / several
+什麼時候,shénme shíhòu,when
+是,shì,to be / is / are
+不是,búshì,is not / no
+有,yǒu,to have / there is
+沒有,méiyǒu,to not have / there isn't
+的,de,(possessive particle)
+了,le,(completed-action particle)
+嗎,ma,(yes/no question particle)
+呢,ne,(question particle)
+吧,ba,(suggestion particle)
+和,hé,and / with
+或者,huòzhě,or
+但是,dànshì,but
+可是,kěshì,but / however
+因為,yīnwèi,because
+所以,suǒyǐ,so / therefore
+如果,rúguǒ,if
+雖然,suīrán,although
+而且,érqiě,moreover / and also
+然後,ránhòu,then / afterwards
+還是,háishì,or / still
+也,yě,also / too
+都,dōu,all / both
+很,hěn,very
+太,tài,too / excessively
+真,zhēn,really / true
+非常,fēicháng,extremely
+比較,bǐjiào,relatively / comparatively
+最,zuì,most
+更,gèng,more / even more
+只,zhǐ,only
+再,zài,again
+又,yòu,again / also
+就,jiù,then / at once
+才,cái,only then / just
+還,hái,still / also
+已經,yǐjīng,already
+正在,zhèngzài,in the process of
+剛才,gāngcái,just now
+馬上,mǎshàng,immediately
+一起,yìqǐ,together
+一定,yídìng,definitely
+可能,kěnéng,maybe / possible
+也許,yěxǔ,perhaps
+當然,dāngrán,of course
+其實,qíshí,actually
+好,hǎo,good / well
+不好,bùhǎo,not good / bad
+大,dà,big
+小,xiǎo,small
+多,duō,many / much
+少,shǎo,few / little
+高,gāo,tall / high
+矮,ǎi,short (height)
+長,cháng,long
+短,duǎn,short (length)
+新,xīn,new
+舊,jiù,old (things)
+老,lǎo,old (people) / experienced
+快,kuài,fast / quick
+慢,màn,slow
+早,zǎo,early
+晚,wǎn,late
+遠,yuǎn,far
+近,jìn,near
+貴,guì,expensive
+便宜,piányí,cheap
+難,nán,difficult
+容易,róngyì,easy
+重要,zhòngyào,important
+有名,yǒumíng,famous
+漂亮,piàoliang,pretty / beautiful
+好看,hǎokàn,good-looking
+可愛,kě'ài,cute / lovable
+聰明,cōngming,smart / clever
+有趣,yǒuqù,interesting
+無聊,wúliáo,boring
+忙,máng,busy
+累,lèi,tired
+餓,è,hungry
+渴,kě,thirsty
+高興,gāoxìng,happy / glad
+快樂,kuàilè,happy
+開心,kāixīn,happy / delighted
+難過,nánguò,sad
+生氣,shēngqì,angry
+緊張,jǐnzhāng,nervous / tense
+害怕,hàipà,afraid
+喜歡,xǐhuan,to like
+愛,ài,to love
+討厭,tǎoyàn,to dislike / annoying
+希望,xīwàng,to hope
+覺得,juéde,to feel / to think
+認為,rènwéi,to think / to believe
+知道,zhīdào,to know
+明白,míngbái,to understand
+了解,liǎojiě,to understand / to be familiar with
+懂,dǒng,to understand
+記得,jìde,to remember
+忘記,wàngjì,to forget
+想,xiǎng,to want / to think / to miss
+要,yào,to want / will / to need
+需要,xūyào,to need
+應該,yīnggāi,should / ought to
+可以,kěyǐ,can / may
+能,néng,can / be able to
+會,huì,can / will / know how to
+願意,yuànyì,to be willing
+敢,gǎn,to dare
+在,zài,to be at / in
+來,lái,to come
+去,qù,to go
+回,huí,to return
+回來,huílái,to come back
+回去,huíqù,to go back
+出去,chūqù,to go out
+進來,jìnlái,to come in
+到,dào,to arrive / to reach
+走,zǒu,to walk / to leave
+跑,pǎo,to run
+站,zhàn,to stand
+坐,zuò,to sit
+躺,tǎng,to lie down
+睡覺,shuìjiào,to sleep
+起床,qǐchuáng,to get up
+休息,xiūxí,to rest
+工作,gōngzuò,to work / job
+上班,shàngbān,to go to work
+下班,xiàbān,to get off work
+學習,xuéxí,to study / to learn
+讀書,dúshū,to study / to read
+唸書,niànshū,to study
+教,jiāo,to teach
+看,kàn,to look / to read / to watch
+聽,tīng,to listen
+說,shuō,to speak / to say
+講,jiǎng,to speak / to tell
+告訴,gàosù,to tell
+問,wèn,to ask
+回答,huídá,to answer / to reply
+叫,jiào,to call / to be named
+寫,xiě,to write
+讀,dú,to read
+唱,chàng,to sing
+跳舞,tiàowǔ,to dance
+笑,xiào,to laugh / to smile
+哭,kū,to cry
+吃,chī,to eat
+喝,hē,to drink
+買,mǎi,to buy
+賣,mài,to sell
+給,gěi,to give
+送,sòng,to give (gift) / to deliver
+拿,ná,to take / to hold
+找,zhǎo,to look for / to give change
+用,yòng,to use
+做,zuò,to do / to make
+打,dǎ,to hit / to play
+玩,wán,to play / to have fun
+開,kāi,to open / to drive / to turn on
+關,guān,to close / to turn off
+穿,chuān,to wear (clothes)
+洗,xǐ,to wash
+帶,dài,to bring / to carry
+放,fàng,to put / to place
+拿出,náchū,to take out
+幫,bāng,to help
+幫忙,bāngmáng,to help
+等,děng,to wait
+讓,ràng,to let / to allow
+換,huàn,to change / to exchange
+搬,bān,to move / to carry
+借,jiè,to borrow / to lend
+見,jiàn,to see / to meet
+見面,jiànmiàn,to meet
+認識,rènshì,to know / to be acquainted
+介紹,jièshào,to introduce
+參加,cānjiā,to participate / to attend
+開始,kāishǐ,to begin
+結束,jiéshù,to end / to finish
+完成,wánchéng,to complete
+繼續,jìxù,to continue
+準備,zhǔnbèi,to prepare
+決定,juédìng,to decide
+選擇,xuǎnzé,to choose
+試,shì,to try
+找到,zhǎodào,to find
+發現,fāxiàn,to discover
+注意,zhùyì,to pay attention
+忘,wàng,to forget
+害,hài,to harm
+怕,pà,to fear
+人,rén,person
+男人,nánrén,man
+女人,nǚrén,woman
+男孩,nánhái,boy
+女孩,nǚhái,girl
+小孩,xiǎohái,child
+大人,dàrén,adult
+朋友,péngyǒu,friend
+同學,tóngxué,classmate
+同事,tóngshì,colleague
+老師,lǎoshī,teacher
+學生,xuéshēng,student
+醫生,yīshēng,doctor
+護士,hùshì,nurse
+家人,jiārén,family member
+爸爸,bàba,dad
+媽媽,māma,mom
+父母,fùmǔ,parents
+哥哥,gēge,older brother
+姐姐,jiějie,older sister
+弟弟,dìdi,younger brother
+妹妹,mèimei,younger sister
+兒子,érzi,son
+女兒,nǚ'ér,daughter
+丈夫,zhàngfū,husband
+太太,tàitài,wife
+爺爺,yéye,grandfather (paternal)
+奶奶,nǎinai,grandmother (paternal)
+先生,xiānshēng,Mr. / sir / husband
+小姐,xiǎojiě,Miss / young lady
+家,jiā,home / family
+房子,fángzi,house
+房間,fángjiān,room
+門,mén,door
+窗戶,chuānghù,window
+廚房,chúfáng,kitchen
+廁所,cèsuǒ,toilet / restroom
+桌子,zhuōzi,table / desk
+椅子,yǐzi,chair
+床,chuáng,bed
+燈,dēng,lamp / light
+電視,diànshì,television
+電腦,diànnǎo,computer
+手機,shǒujī,mobile phone
+電話,diànhuà,telephone
+網路,wǎnglù,internet / network
+東西,dōngxī,thing / stuff
+錢,qián,money
+書,shū,book
+筆,bǐ,pen
+紙,zhǐ,paper
+報紙,bàozhǐ,newspaper
+照片,zhàopiàn,photo
+禮物,lǐwù,gift
+衣服,yīfú,clothes
+鞋子,xiézi,shoes
+帽子,màozi,hat
+眼鏡,yǎnjìng,glasses
+包,bāo,bag
+傘,sǎn,umbrella
+鑰匙,yàoshi,key
+車,chē,car / vehicle
+汽車,qìchē,car
+火車,huǒchē,train
+飛機,fēijī,airplane
+公車,gōngchē,bus
+腳踏車,jiǎotàchē,bicycle
+飯,fàn,cooked rice / meal
+早餐,zǎocān,breakfast
+午餐,wǔcān,lunch
+晚餐,wǎncān,dinner
+菜,cài,dish / vegetable
+肉,ròu,meat
+魚,yú,fish
+雞蛋,jīdàn,egg
+牛奶,niúnǎi,milk
+水,shuǐ,water
+茶,chá,tea
+咖啡,kāfēi,coffee
+酒,jiǔ,alcohol / wine
+水果,shuǐguǒ,fruit
+蘋果,píngguǒ,apple
+香蕉,xiāngjiāo,banana
+麵包,miànbāo,bread
+麵,miàn,noodles
+米飯,mǐfàn,cooked rice
+湯,tāng,soup
+糖,táng,sugar / candy
+鹽,yán,salt
+餐廳,cāntīng,restaurant
+商店,shāngdiàn,shop / store
+超市,chāoshì,supermarket
+市場,shìchǎng,market
+銀行,yínháng,bank
+醫院,yīyuàn,hospital
+學校,xuéxiào,school
+公司,gōngsī,company
+辦公室,bàngōngshì,office
+圖書館,túshūguǎn,library
+公園,gōngyuán,park
+電影院,diànyǐngyuàn,cinema
+飯店,fàndiàn,hotel / restaurant
+機場,jīchǎng,airport
+車站,chēzhàn,station / stop
+地方,dìfāng,place
+城市,chéngshì,city
+國家,guójiā,country
+世界,shìjiè,world
+路,lù,road
+街,jiē,street
+橋,qiáo,bridge
+山,shān,mountain
+河,hé,river
+海,hǎi,sea
+天空,tiānkōng,sky
+太陽,tàiyáng,sun
+月亮,yuèliàng,moon
+星星,xīngxīng,star
+天氣,tiānqì,weather
+雨,yǔ,rain
+雪,xuě,snow
+風,fēng,wind
+雲,yún,cloud
+時間,shíjiān,time
+時候,shíhòu,time / moment
+現在,xiànzài,now
+今天,jīntiān,today
+明天,míngtiān,tomorrow
+昨天,zuótiān,yesterday
+早上,zǎoshang,morning
+中午,zhōngwǔ,noon
+下午,xiàwǔ,afternoon
+晚上,wǎnshàng,evening
+今年,jīnnián,this year
+明年,míngnián,next year
+去年,qùnián,last year
+星期,xīngqí,week
+月,yuè,month / moon
+年,nián,year
+日,rì,day
+號,hào,date / number
+分鐘,fēnzhōng,minute
+小時,xiǎoshí,hour
+點,diǎn,o'clock / point
+以前,yǐqián,before / ago
+以後,yǐhòu,after / later
+最近,zuìjìn,recently
+平常,píngcháng,usually
+有時候,yǒu shíhòu,sometimes
+經常,jīngcháng,often
+顏色,yánsè,color
+紅色,hóngsè,red
+白色,báisè,white
+黑色,hēisè,black
+藍色,lánsè,blue
+綠色,lǜsè,green
+黃色,huángsè,yellow
+身體,shēntǐ,body
+頭,tóu,head
+臉,liǎn,face
+眼睛,yǎnjīng,eye
+耳朵,ěrduo,ear
+鼻子,bízi,nose
+嘴巴,zuǐbā,mouth
+手,shǒu,hand
+腳,jiǎo,foot
+頭髮,tóufǎ,hair
+病,bìng,illness / to be sick
+藥,yào,medicine
+數字,shùzì,number / digit
+一,yī,one
+二,èr,two
+三,sān,three
+四,sì,four
+五,wǔ,five
+六,liù,six
+七,qī,seven
+八,bā,eight
+九,jiǔ,nine
+十,shí,ten
+百,bǎi,hundred
+千,qiān,thousand
+萬,wàn,ten thousand
+半,bàn,half
+第一,dìyī,first
+兩,liǎng,two (of something)
+個,gè,(general measure word)
+位,wèi,(polite measure word for people)
+本,běn,(measure word for books)
+張,zhāng,(measure word for flat objects)
+件,jiàn,(measure word for items/clothes)
+隻,zhī,(measure word for animals)
+塊,kuài,piece / dollar (colloquial)
+杯,bēi,cup / glass (measure word)
+歲,suì,years of age
+上,shàng,on / above / up
+下,xià,under / below / down
+裡,lǐ,inside
+外,wài,outside
+前,qián,front / before
+後,hòu,back / after
+左,zuǒ,left
+右,yòu,right (direction)
+中間,zhōngjiān,middle / between
+旁邊,pángbiān,beside / next to
+對面,duìmiàn,opposite side
+附近,fùjìn,nearby
+東,dōng,east
+南,nán,south
+西,xī,west
+北,běi,north
+語言,yǔyán,language
+中文,zhōngwén,Chinese (language)
+英文,yīngwén,English (language)
+字,zì,character / word
+詞,cí,word
+意思,yìsi,meaning
+問題,wèntí,question / problem
+答案,dá'àn,answer
+事情,shìqing,matter / affair
+辦法,bànfǎ,method / way
+原因,yuányīn,reason / cause
+結果,jiéguǒ,result
+機會,jīhuì,opportunity / chance
+習慣,xíguàn,habit / to be used to
+能力,nénglì,ability
+經驗,jīngyàn,experience
+故事,gùshì,story
+新聞,xīnwén,news
+消息,xiāoxī,news / information
+電影,diànyǐng,movie
+音樂,yīnyuè,music
+歌,gē,song
+遊戲,yóuxì,game
+運動,yùndòng,sports / to exercise
+旅行,lǚxíng,to travel
+生活,shēnghuó,life
+夢,mèng,dream
+名字,míngzì,name
+年紀,niánjì,age
+生日,shēngrì,birthday
+意見,yìjiàn,opinion
+計畫,jìhuà,plan
+價錢,jiàqián,price
+質量,zhìliàng,quality
+數量,shùliàng,quantity
+速度,sùdù,speed
+方法,fāngfǎ,method
+情況,qíngkuàng,situation
+關係,guānxì,relationship / relation
+感覺,gǎnjué,feeling / to feel
+力氣,lìqì,strength / physical effort
+聲音,shēngyīn,sound / voice
+味道,wèidào,taste / flavor / smell
+心情,xīnqíng,mood
+身分,shēnfèn,identity / status
+重量,zhòngliàng,weight
+長度,chángdù,length
+溫度,wēndù,temperature
+高度,gāodù,height
+深,shēn,deep
+淺,qiǎn,shallow
+寬,kuān,wide
+窄,zhǎi,narrow
+胖,pàng,fat
+瘦,shòu,thin (person)
+熱,rè,hot
+冷,lěng,cold
+暖,nuǎn,warm
+涼,liáng,cool
+亮,liàng,bright
+暗,àn,dark
+乾淨,gānjìng,clean
+髒,zāng,dirty
+安靜,ānjìng,quiet
+吵,chǎo,noisy
+危險,wéixiǎn,dangerous
+安全,ānquán,safe
+方便,fāngbiàn,convenient
+舒服,shūfú,comfortable
+特別,tèbié,special / especially
+普通,pǔtōng,ordinary / common
+一樣,yíyàng,the same
+不同,bùtóng,different
+別的,biéde,other
+所有,suǒyǒu,all
+一些,yìxiē,some
