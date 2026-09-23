@@ -3,8 +3,9 @@ import os, subprocess, sys, time
 from concurrent.futures import ThreadPoolExecutor
 
 JOBS = [("scale", 0), ("untied", 0), ("nodelta", 0), ("scale", 1), ("local", 0), ("single", 0), ("scale", 2)]
-CORES = [int(c) for c in os.environ.get("CORES", "1,2,3").split(",")]
-EVAL = ["--Ls", "8,16,32,48,64,128", "--n", "2048,2048,1024,512,512,256", "--batch", "128,64,32,16,16,8"]
+CORES = [int(c) for c in os.environ.get("CORES", "0,1,2,3").split(",")]
+# sample counts shrink with L: single-core float64 evaluation at L=128 costs ~1 min per sample
+EVAL = ["--Ls", "8,16,32,48,64,128", "--n", "2048,1024,512,256,128,64", "--batch", "128,64,32,16,16,8"]
 env = dict(os.environ, XLA_FLAGS="--xla_cpu_multi_thread_eigen=false intra_op_parallelism_threads=1")
 free = list(CORES)
 

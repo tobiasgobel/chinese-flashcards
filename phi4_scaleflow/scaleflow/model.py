@@ -53,6 +53,21 @@ class FlowConfig:
     # same single JVP. Without it v is nearly blind to the zero mode (kernels sum to zero, delta
     # removes the local mean), so it cannot build the double-peaked P(M) at criticality.
     zero_mode_input: bool = True
+    # untie the UV end of M_Delta: log s(p) += u(p^2) * q^2 / (1 + q^2), q = p^2 / uv_q. The
+    # correction vanishes like p^4 in the IR, so Delta is fitted inside the window only (off = spec)
+    mdelta_uv: bool = False
+    # scale aggregation. "sum": c = W sum_k h_k (handout 3.3.5). Each h_k has a nonzero mean, so the
+    # sum grows with K ~ log L and tau sees out-of-distribution c on held-out L (measured: rms(c)
+    # 1.5 -> 8.3 from L=8 to 128). "mean_ends" (DEVIATION, default): mean over the shared middle
+    # scales plus separate readouts of the untied UV/IR end scales, which is L-independent.
+    pool: str = "mean_ends"
+    # how kernels are made to sum to zero. "global" (handout 3.3.3): subtract the mean over all
+    # u != 0 of the torus, so R_s = (local s-average of e) - (global average): in the log-correlated
+    # free frame its variance grows like log(L/s). "local" (DEVIATION, default): subtract a multiple
+    # of the fixed envelope g(u/s) = |z|^2 exp(-|z|^2/2) so that sum_u K = 0 on the scale s itself;
+    # R_s is then a band-pass (wavelet) coefficient whose statistics do not depend on L.
+    zero_sum: str = "local"
+    uv_q: float = 1.0
 
 
 def scales(L, cfg: FlowConfig):
@@ -116,13 +131,16 @@ class RadialKernelNet(nnx.Module):
         return out
 
 
-def _normalise_kernel(K):
-    """K: (L, L, E). Mask the centre, then make each channel sum to zero over u != 0."""
+def _normalise_kernel(K, g=None):
+    """K: (L, L, E). Mask the centre, then make each channel sum to zero over u != 0: globally
+    (subtract the mean over the torus) if g is None, else locally by subtracting a * g, g >= 0."""
     L = K.shape[0]
     mask = jnp.ones((L, L)).at[0, 0].set(0.0)[..., None]
     K = K * mask
-    K = K - mask * jnp.sum(K, axis=(0, 1), keepdims=True) / (L * L - 1)
-    return K
+    if g is None:
+        return K - mask * jnp.sum(K, axis=(0, 1), keepdims=True) / (L * L - 1)
+    g = (g * mask[..., 0])[..., None]
+    return K - g * jnp.sum(K, axis=(0, 1), keepdims=True) / jnp.sum(g)
 
 
 def fft_conv(e, K):
@@ -169,8 +187,12 @@ class Conditioner(nnx.Module):
         self.scale_emb = nnx.Param(jnp.zeros((max(n_emb, 1), H)))
         # width-3 convolution along the log-scale axis, shared weights: (3H -> H)
         self.kconv = nnx.Linear(3 * H, H, rngs=rngs)
-        # final per-(x, k) layer is linear, so it is applied after the sum over k (identical result)
+        # final per-(x, k) layer is linear, so it is applied after the pooling over k
         self.lin_out = nnx.Linear(H, C, rngs=rngs)
+        if cfg.pool == "mean_ends":
+            self.lin_ends = nnx.Param(jax.random.normal(rngs.params(), (cfg.n_uv + cfg.n_ir, H, C)) / np.sqrt(H))
+        elif cfg.pool != "sum":
+            raise ValueError(cfg.pool)
 
     # -- kernels ---------------------------------------------------------------------------
     def kernels(self, L):
@@ -192,6 +214,9 @@ class Conditioner(nnx.Module):
                 graph, st = nnx.split(self.kernel)
                 st = jax.tree.map(lambda a: a[: len(ss)], st)
                 Ks = list(_eval(nnx.merge(graph, st), jnp.asarray(ss, r.dtype)))
+            if cfg.zero_sum == "local":
+                gs = [(r / s) ** 2 * jnp.exp(-0.5 * (r / s) ** 2) for s in ss]
+                return jnp.stack([_normalise_kernel(K, g) for K, g in zip(Ks, gs)]), ss
             return jnp.stack([_normalise_kernel(K) for K in Ks]), ss
         if cfg.mode == "single":
             return _normalise_kernel(self.kernel(r))[None], None
@@ -237,9 +262,39 @@ class Conditioner(nnx.Module):
         hp = jnp.pad(h, ((0, 0), (1, 1), (0, 0)))
         hcat = jnp.concatenate([hp[:, :-2], hp[:, 1:-1], hp[:, 2:]], axis=-1)
         h = h + nnx.gelu(self.kconv(hcat.reshape(B * L * L * n_k, -1)).reshape(h.shape))
-        # c_x = sum_k W h_k(x) + b; no spatial mixing after the multiscale convolution
-        c = self.lin_out(jnp.sum(h, axis=1))
+        # pooling over k is pointwise in x: no spatial mixing after the multiscale convolution
+        c = self.lin_out(self._pool_mid(h)) + self._ends(h)
         return c.reshape(B, L, L, -1)
+
+    def _ends_index(self, n_k):
+        cfg = self.cfg
+        if cfg.pool == "sum" or n_k <= 1:
+            return [], []
+        uv = list(range(min(cfg.n_uv, n_k)))
+        ir = [n_k - 1 - j for j in range(cfg.n_ir) if n_k - 1 - j >= len(uv)]
+        return uv, ir
+
+    def _pool_mid(self, h):
+        n_k = h.shape[1]
+        if self.cfg.pool == "sum":
+            return jnp.sum(h, axis=1)
+        uv, ir = self._ends_index(n_k)
+        mid = [k for k in range(n_k) if k not in uv and k not in ir]
+        if not mid:
+            return jnp.zeros_like(h[:, 0])
+        return jnp.mean(h[:, mid[0] : mid[-1] + 1], axis=1)
+
+    def _ends(self, h):
+        uv, ir = self._ends_index(h.shape[1])
+        if not uv and not ir:
+            return 0.0
+        W = self.lin_ends.get_value()
+        out = 0.0
+        for i, k in enumerate(uv):
+            out = out + h[:, k] @ W[i]
+        for j, k in enumerate(ir):
+            out = out + h[:, k] @ W[self.cfg.n_uv + j]
+        return out
 
 
 # ----------------------------------------------------------------------------------------------
@@ -346,20 +401,29 @@ class RK4Flow(bijx.Bijection):
 class AnomalousScaling(bijx.ApplyBijection):
     """M_Delta: phi(p) <- A |p|^Delta phi(p) for p != 0, B phi(0) for the zero mode.
 
-    log|det M| = (N-1) log A + log B + Delta sum_{p != 0} log|p|, with |p| the lattice momentum."""
+    log|det M| = (N-1) log A + log B + Delta sum_{p != 0} log|p|, with |p| the lattice momentum.
+    Optional UV-untied correction (uv=True): log s(p) += u(p^2) q^2/(1+q^2), q = p^2/uv_q, with u a
+    small MLP; still diagonal in Fourier space, so log|det| = sum_p log s(p) stays closed-form."""
 
-    def __init__(self, delta=0.0, log_a=0.0, log_b=0.0, trainable_delta=True):
+    def __init__(self, delta=0.0, log_a=0.0, log_b=0.0, trainable_delta=True, uv=False, uv_q=1.0,
+                 rngs=None):
         V = nnx.Param if trainable_delta else bijx.Const
         self.delta = V(jnp.asarray(delta, jnp.float32))
         self.log_a = nnx.Param(jnp.asarray(log_a, jnp.float32))
         self.log_b = nnx.Param(jnp.asarray(log_b, jnp.float32))
+        self.uv_q = uv_q
+        self.uv_net = MLP([1, 16, 1], rngs=rngs, act=nnx.tanh, final_scale=0.0) if uv else None
 
     def log_scale(self, L, dtype):
         p2 = phat2(L, dtype)
         logp = 0.5 * jnp.log(jnp.where(p2 > 0, p2, 1.0))
         d = self.delta.get_value().astype(dtype)
-        return jnp.where(p2 > 0, self.log_a.get_value().astype(dtype) + d * logp,
-                         self.log_b.get_value().astype(dtype))
+        ls = jnp.where(p2 > 0, self.log_a.get_value().astype(dtype) + d * logp,
+                       self.log_b.get_value().astype(dtype))
+        if self.uv_net is not None:
+            q = p2 / self.uv_q
+            ls = ls + self.uv_net(p2[..., None] / 8.0)[..., 0] * q**2 / (1 + q**2)
+        return ls
 
     def log_det(self, L, dtype=jnp.float32):
         return jnp.sum(self.log_scale(L, dtype))
@@ -386,7 +450,8 @@ class ScaleFlow(nnx.Module):
     def __init__(self, cfg: FlowConfig, *, rngs):
         self.cfg = cfg
         self.velocity = Velocity(cfg, rngs=rngs)
-        self.mdelta = AnomalousScaling(trainable_delta=cfg.use_delta_layer)
+        self.mdelta = AnomalousScaling(trainable_delta=cfg.use_delta_layer,
+                                       uv=cfg.mdelta_uv and cfg.use_delta_layer, uv_q=cfg.uv_q, rngs=rngs)
         if not cfg.use_delta_layer:
             self.mdelta.log_a = bijx.Const(self.mdelta.log_a.get_value())
             self.mdelta.log_b = bijx.Const(self.mdelta.log_b.get_value())

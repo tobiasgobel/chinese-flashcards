@@ -46,7 +46,9 @@ def save_checkpoint(path, model, flow_cfg, train_cfg, history):
 def load_checkpoint(path, dtype=jnp.float32):
     with open(path, "rb") as f:
         ck = pickle.load(f)
-    ck["flow"].setdefault("zero_mode_input", False)  # checkpoints from before the option existed
+    ck["flow"].setdefault("zero_mode_input", False)  # checkpoints from before the options existed
+    ck["flow"].setdefault("pool", "sum")
+    ck["flow"].setdefault("zero_sum", "global")
     cfg = FlowConfig(**ck["flow"])
     model = ScaleFlow(cfg, rngs=nnx.Rngs(0))
     state = nnx.state(model, nnx.Param)

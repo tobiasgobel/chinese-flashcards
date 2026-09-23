@@ -87,6 +87,22 @@ def test_base_covariance_matches_C():
 
 # 4. M layer -------------------------------------------------------------------------------------
 @pytest.mark.parametrize("L", [4, 5])
+def test_mdelta_uv_logdet_bruteforce(L):
+    m = AnomalousScaling(delta=0.2, uv=True, rngs=nnx.Rngs(4))
+    m.uv_net.layers[-1].kernel.set_value(jnp.ones_like(m.uv_net.layers[-1].kernel.get_value()))
+    m = cast_state(m, jnp.float64)
+    x = rand_phi(L, B=1)[0]
+    J = jax.jacfwd(lambda p: m.forward(p[None], jnp.zeros(1))[0][0].reshape(-1))(x)
+    _, ld = jnp.linalg.slogdet(J.reshape(L * L, L * L))
+    np.testing.assert_allclose(m.log_det(L, jnp.float64), ld, rtol=1e-10)
+    # the correction vanishes in the IR (like p^4), leaving the pure power law there
+    ls = m.log_scale(64, jnp.float64)
+    p2 = phat2(64, jnp.float64)
+    pure = m.log_a.get_value() + m.delta.get_value() * 0.5 * jnp.log(jnp.where(p2 > 0, p2, 1))
+    assert float(jnp.abs(ls - pure)[1, 0]) < 1e-3
+
+
+@pytest.mark.parametrize("L", [4, 5])
 def test_mdelta_logdet_bruteforce(L):
     m = cast_state(AnomalousScaling(delta=0.3, log_a=0.1, log_b=-0.2), jnp.float64)
     x = rand_phi(L, B=1)[0]
@@ -162,9 +178,9 @@ def test_scale_covariance_of_responses():
     # inside the window (s >= 2) the responses agree up to discretisation error ...
     inside = (s1 >= 2) & (s1 <= L / 4)
     assert errs[inside].max() < 0.01, errs
-    # even at the lattice cutoff (s = 1) the mismatch is only a few percent, because
-    # k(0) = 0 makes the centre mask harmless and k is smooth in u
-    assert errs.max() < 0.03, errs
+    # beyond the lattice cutoff the mismatch is small; s = 1 is the untied UV scale (lattice
+    # artefacts are expected there and handled by its own embedding / readout)
+    assert errs[s1 > 1].max() < 0.03, errs
 
 
 def test_model_transfers_across_sizes_and_log_density_roundtrip():
@@ -175,3 +191,16 @@ def test_model_transfers_across_sizes_and_log_density_roundtrip():
         phi, lq = model.sample(jax.random.PRNGKey(L), 3, L, steps=40, remat=False, dtype=jnp.float64)
         lq2 = model.log_density(phi, steps=40)
         np.testing.assert_allclose(lq, lq2, rtol=1e-6, atol=1e-5)
+
+
+# 8. conditioner statistics are L-independent on the free-field base (needed for transfer) --------
+def test_conditioner_statistics_independent_of_L():
+    cfg = FlowConfig()  # mean_ends pooling + locally zero-sum kernels
+    v = make_velocity("scale")
+    rms = []
+    for L in (16, 32, 64):
+        noise, scale, _ = free_base(L, cfg.mu0)
+        B = 4096 // L
+        phi0, _ = scale.forward(jax.random.normal(jax.random.PRNGKey(L), (B, L, L), jnp.float64), jnp.zeros(B))
+        rms.append(float(jnp.sqrt(jnp.mean(v.cond(phi0) ** 2))))
+    assert max(rms) / min(rms) < 1.1, rms
