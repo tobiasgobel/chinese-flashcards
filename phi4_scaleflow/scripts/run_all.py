@@ -2,7 +2,7 @@
 import os, subprocess, sys, time
 from concurrent.futures import ThreadPoolExecutor
 
-JOBS = [("scale", 0), ("untied", 0), ("nodelta", 0), ("scale", 1), ("local", 0), ("single", 0), ("scale", 2)]
+JOBS = [("local", 0), ("single", 0), ("scale", 2), ("scale", 0), ("scale", 1), ("nodelta", 0), ("untied", 0)]
 CORES = [int(c) for c in os.environ.get("CORES", "0,1,2,3").split(",")]
 # sample counts shrink with L: single-core float64 evaluation at L=128 costs ~1 min per sample
 EVAL = ["--Ls", "8,16,32,48,64,128", "--n", "2048,1024,512,256,128,64", "--batch", "128,64,32,16,16,8"]
@@ -21,9 +21,9 @@ def run(job):
                 subprocess.run(["taskset", "-c", str(core), sys.executable, "-m", "scaleflow.train",
                                 f"configs/{variant}.json", "--out", out, "--seed", str(seed)],
                                stdout=log, stderr=subprocess.STDOUT, env=env, check=True)
-            if not os.path.exists(f"{out}/eval.json") or "--force-eval" in sys.argv:
-                subprocess.run(["taskset", "-c", str(core), sys.executable, "-m", "scaleflow.evaluate", out, *EVAL],
-                               stdout=log, stderr=subprocess.STDOUT, env=env, check=True)
+            # resumable: sizes already in eval.json are skipped
+            subprocess.run(["taskset", "-c", str(core), sys.executable, "-m", "scaleflow.evaluate", out, *EVAL, "--append"],
+                           stdout=log, stderr=subprocess.STDOUT, env=env, check=True)
         print(time.strftime("%H:%M:%S"), "done", out, flush=True)
     except Exception as e:
         print(time.strftime("%H:%M:%S"), "FAILED", job, e, flush=True)

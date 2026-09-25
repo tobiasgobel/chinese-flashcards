@@ -94,6 +94,7 @@ def main():
     ap.add_argument("--batch", default="256,128,64,32,32,16")
     ap.add_argument("--tol", type=float, default=1e-3)
     ap.add_argument("--seed", type=int, default=2024)
+    ap.add_argument("--append", action="store_true", help="keep existing eval.json results, skip done Ls")
     a = ap.parse_args()
     model, ck = load_checkpoint(os.path.join(a.run_dir, "model.pkl"), dtype=jnp.float64)
     tc = ck["train"]
@@ -102,11 +103,17 @@ def main():
                log_a=float(model.mdelta.log_a.get_value()), log_b=float(model.mdelta.log_b.get_value()),
                results=[])
     path = os.path.join(a.run_dir, "eval.json")
+    if a.append and os.path.exists(path):
+        out["results"] = json.load(open(path))["results"]
+    done = {r["L"] for r in out["results"]}
     for L, n, b in zip(map(int, a.Ls.split(",")), map(int, a.n.split(",")), map(int, a.batch.split(","))):
+        if L in done:
+            continue
         r = evaluate(model, L, tc["m2"], tc["lam"], n, b, seed=a.seed + L, tol=a.tol)
         print(json.dumps({k: r[k] for k in ("L", "ode_steps", "varlogw_N", "ess", "sec_per_sample")}),
               "U=", r["obs"]["U"], "chi=", r["obs"]["chi"], flush=True)
         out["results"].append(r)
+        out["results"].sort(key=lambda x: x["L"])
         with open(path, "w") as f:
             json.dump(out, f)
 
