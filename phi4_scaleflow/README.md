@@ -93,9 +93,14 @@ There is also a round-trip test of sampling against density evaluation on L = 6,
      (the IR end is untied).
 2. **The last per-(x, k) layer of the scale mixer is linear and applied after the sum over k.**
    Σ_k W h_k = W Σ_k h_k, so this is the same function class at 1/K of the cost.
-3. **Model size and budget are scaled down for CPU** (see the next section). The spec defaults
+3. **The v2 conditioner** (`pool="mean_ends"`, `zero_sum="local"`, both the defaults). v1 used the
+   handout's sum over scales and globally zero-sum kernels, and its conditioner statistics grew with L.
+   v2 averages over the shared scales, reads out the untied end scales separately, and uses
+   band-pass kernels that are zero-sum over their own scale. `runs_v1/` holds the v1 runs. See
+   report §2 for the details and the (negative) effect on transfer.
+4. **Model size and budget are scaled down for CPU** (see the next section). The spec defaults
    (batch 128, wider channels, more steps) are one config edit away.
-4. **HMC autocorrelations** are measured without Z₂ flips, so they show plain-HMC critical slowing
+5. **HMC autocorrelations** are measured without Z₂ flips, so they show plain-HMC critical slowing
    down.
 
 ## Compute caveat
@@ -109,6 +114,7 @@ The runs therefore use:
 - channel widths E = 4, H = 8 and C = 8;
 - training batches of 64, 32 and 16 at L = 8, 16 and 32;
 - 2000 Adam steps;
-- one seed for each ablation.
+- one seed for each ablation and 3 seeds for the full model;
+- 64–2048 evaluation samples per L, falling as L grows (float64 on one core costs about 50 s per sample at L = 128).
 
 These numbers test the machinery and the transfer trend. They are not converged samplers.

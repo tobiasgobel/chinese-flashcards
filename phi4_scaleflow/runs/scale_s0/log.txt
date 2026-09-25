@@ -100,3 +100,19 @@ Constant folding an instruction is taking > 1s:
 This isn't necessarily a bug; constant-folding is inherently a trade-off between compilation time and speed at runtime. XLA has some guards that attempt to keep constant folding from taking too long, but fundamentally you'll always be able to come up with an input program that takes a long time.
 
 If you'd like to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+E0925 04:37:40.833978     500 slow_operation_alarm.cc:73] Constant folding an instruction is taking > 1s:
+
+  %dot.397 = f64[16384,32]{1,0} dot(%constant.1273, %constant.656), lhs_contracting_dims={1}, rhs_contracting_dims={0}, metadata={op_name="jit(f)/while/body/closed_call/dot_general" stack_frame_id=729}
+
+This isn't necessarily a bug; constant-folding is inherently a trade-off between compilation time and speed at runtime. XLA has some guards that attempt to keep constant folding from taking too long, but fundamentally you'll always be able to come up with an input program that takes a long time.
+
+If you'd like to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+E0925 04:37:41.109679     490 slow_operation_alarm.cc:140] The operation took 1.275848928s
+Constant folding an instruction is taking > 1s:
+
+  %dot.397 = f64[16384,32]{1,0} dot(%constant.1273, %constant.656), lhs_contracting_dims={1}, rhs_contracting_dims={0}, metadata={op_name="jit(f)/while/body/closed_call/dot_general" stack_frame_id=729}
+
+This isn't necessarily a bug; constant-folding is inherently a trade-off between compilation time and speed at runtime. XLA has some guards that attempt to keep constant folding from taking too long, but fundamentally you'll always be able to come up with an input program that takes a long time.
+
+If you'd like to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+{"L": 128, "ode_steps": 64, "varlogw_N": 9.394781482568636, "ess": 0.01562500000002231, "sec_per_sample": 47.27932407706976} U= [0.6666666666664128, 1.1587315511113473e-05] chi= [602.3505769623437, 591.0957505470838]

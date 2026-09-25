@@ -27,7 +27,7 @@ def variant(ev):
 
 def load_runs():
     runs = []
-    for p in sorted(glob.glob(os.path.join(ROOT, "runs", "*", "eval.json"))):
+    for p in sorted(glob.glob(os.path.join(ROOT, "runs", "*_s[0-9]", "eval.json"))):
         ev = json.load(open(p))
         ev["variant"] = variant(ev)
         ev["name"] = os.path.basename(os.path.dirname(p))
@@ -75,12 +75,20 @@ def main():
     for v in variants:
         pts = [(L, *agg(v, "varlogw_N", L)[:2]) for L in Ls if agg(v, "varlogw_N", L)]
         pts = np.array(pts)
-        ax.errorbar(pts[:, 0], pts[:, 1], pts[:, 2], marker="o", ms=4, capsize=2, color=COLOR[v], label=LABEL[v])
+        cap = 3e3
+        off = pts[:, 1] > cap
+        y = np.minimum(pts[:, 1], cap)
+        ax.errorbar(pts[:, 0], y, np.where(off, 0, pts[:, 2]), marker="o", ms=4, capsize=2, color=COLOR[v], label=LABEL[v])
+        ax.plot(pts[off, 0], y[off], "^", ms=8, color=COLOR[v])
     ax.axvspan(7, 34, color="0.92", zorder=0)
-    ax.text(9, ax.get_ylim()[1] * 0.9 if False else 0, "")
-    ax.set_xscale("log", base=2); ax.set_yscale("log")
+    # v1 (handout-spec aggregation) for reference
+    for p in sorted(glob.glob(os.path.join(ROOT, "runs_v1", "scale_s0", "eval.json"))):
+        e = json.load(open(p))
+        ax.plot([r["L"] for r in e["results"]], [r["varlogw_N"] for r in e["results"]], "--", color=COLOR["scale"],
+                alpha=0.5, lw=1, label="full, v1 (spec sum pooling)")
+    ax.set_xscale("log", base=2); ax.set_yscale("log"); ax.set_ylim(5e-3, 1e4)
     ax.set_xticks(Ls); ax.set_xticklabels(Ls)
-    ax.set_xlabel("L  (shaded: training sizes)"); ax.set_ylabel("Var(log w) / N")
+    ax.set_xlabel("L  (shaded: training sizes; ▲ = off scale)"); ax.set_ylabel("Var(log w) / N")
     ax.legend(fontsize=7, frameon=False)
     fig.tight_layout(); fig.savefig(os.path.join(FIG, "varlogw_vs_L.png"), dpi=160); plt.close(fig)
 
@@ -147,6 +155,25 @@ def main():
     json.dump(deltas, open(os.path.join(ROOT, "results", "deltas.json"), "w"), indent=1)
     for v, d in deltas.items():
         print(v, "Delta = %.4f +- %.4f (n=%d)" % (np.mean(d), np.std(d, ddof=1) if len(d) > 1 else 0, len(d)))
+    # markdown results table: Var(log w)/N (mean over seeds; +- sem over seeds, or bootstrap if 1 seed)
+    lines = ["| variant | seeds | Delta | " + " | ".join(f"L={L}{'*' if L not in TRAIN_LS else ''}" for L in Ls) + " |",
+             "|---|---|---|" + "---|" * len(Ls)]
+    for v in variants:
+        cells = []
+        for L in Ls:
+            xs = [r for r in rows if r["variant"] == v and r["L"] == L]
+            if not xs:
+                cells.append("–"); continue
+            vals = np.array([r["varlogw_N"] for r in xs])
+            err = np.std(vals, ddof=1) / np.sqrt(len(vals)) if len(vals) > 1 else xs[0]["varlogw_N_err"]
+            m = vals.mean()
+            cells.append(f"{m:.3g} ± {err:.2g}" if m < 1e3 else f"{m:.1e}")
+        d = deltas[v]
+        dstr = f"{np.mean(d):.3f} ± {np.std(d, ddof=1):.3f}" if len(d) > 1 else f"{d[0]:.3f}"
+        ns = len({r["seed"] for r in rows if r["variant"] == v})
+        lines.append(f"| {LABEL[v]} | {ns} | {dstr} | " + " | ".join(cells) + " |")
+    open(os.path.join(ROOT, "results", "table_varlogw.md"), "w").write("\n".join(lines) + "\n")
+    print("\n".join(lines))
     print("table:")
     for v in variants:
         print(v, " ".join("L%d:%.4f±%.4f" % (L, *agg(v, "varlogw_N", L)[:2]) for L in Ls if agg(v, "varlogw_N", L)))

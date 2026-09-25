@@ -1,0 +1,103 @@
+flow: FlowConfig(mode='scale', use_delta_layer=True, embed=4, hidden=8, cond=8, tau_hidden=32, tau_terms=8, kernel_hidden=32, s_min=1.0, ratio=1.4142135623730951, n_uv=1, n_ir=2, max_scales=16, local_size=9, mu0=2.0, out_scale=0.1, zero_mode_input=True, mdelta_uv=False, pool='mean_ends', zero_sum='local', uv_q=1.0) 
+train: {'m2': -4.0, 'lam': 4.25, 'train_Ls': [8, 16, 32], 'batch': 64, 'batch_by_L': {'8': 64, '16': 32, '32': 16}, 'lr': 0.001, 'steps': 2000, 'ode_steps': 8, 'clip': 1.0, 'seed': 2, 'log_every': 25, 'curriculum': [[0.0, [8]], [0.1, [8, 16]], [0.3, [8, 16, 32]]], 'L_weights': {'8': 1.0, '16': 1.0, '32': 1.0}}
+[   25      50s] Delta=-0.0232 L8: F=-0.1119 var/N=23.1677 ess=0.04
+[   50      83s] Delta=-0.0252 L8: F=-0.2612 var/N=1.4764 ess=0.05
+[   75     115s] Delta=-0.0187 L8: F=-0.2931 var/N=0.6158 ess=0.06
+[  100     148s] Delta=-0.0157 L8: F=-0.3057 var/N=0.3858 ess=0.04
+[  125     180s] Delta=-0.0129 L8: F=-0.3109 var/N=0.2990 ess=0.05
+[  150     213s] Delta=-0.0092 L8: F=-0.3157 var/N=0.2730 ess=0.05
+[  175     246s] Delta=-0.0046 L8: F=-0.3199 var/N=0.2463 ess=0.06
+[  200     279s] Delta=+0.0012 L8: F=-0.3277 var/N=0.2185 ess=0.07
+[  225     351s] Delta=+0.0102 L16: F=-0.3215 var/N=0.5156 ess=0.05 L8: F=-0.3332 var/N=0.1698 ess=0.06
+[  250     398s] Delta=+0.0168 L8: F=-0.3310 var/N=0.1526 ess=0.07 L16: F=-0.3289 var/N=0.5323 ess=0.06
+[  275     443s] Delta=+0.0223 L8: F=-0.3616 var/N=0.0965 ess=0.08 L16: F=-0.3517 var/N=0.2802 ess=0.05
+[  300     490s] Delta=+0.0272 L16: F=-0.3695 var/N=0.1877 ess=0.06 L8: F=-0.3751 var/N=0.0627 ess=0.08
+[  325     549s] Delta=+0.0341 L8: F=-0.3697 var/N=0.0689 ess=0.11 L16: F=-0.3866 var/N=0.0624 ess=0.10
+[  350     607s] Delta=+0.0401 L8: F=-0.3763 var/N=0.0592 ess=0.08 L16: F=-0.3748 var/N=0.1714 ess=0.07
+[  375     667s] Delta=+0.0478 L16: F=-0.3868 var/N=0.0903 ess=0.09 L8: F=-0.3795 var/N=0.0545 ess=0.08
+[  400     726s] Delta=+0.0537 L16: F=-0.3862 var/N=0.0955 ess=0.09 L8: F=-0.3761 var/N=0.0581 ess=0.09
+[  425     782s] Delta=+0.0589 L16: F=-0.3868 var/N=0.0835 ess=0.10 L8: F=-0.3866 var/N=0.0441 ess=0.10
+[  450     837s] Delta=+0.0655 L8: F=-0.3902 var/N=0.0523 ess=0.08 L16: F=-0.3834 var/N=0.1197 ess=0.09
+[  475     896s] Delta=+0.0699 L16: F=-0.3901 var/N=0.0971 ess=0.08 L8: F=-0.3854 var/N=0.0519 ess=0.09
+[  500     958s] Delta=+0.0757 L16: F=-0.3944 var/N=0.0669 ess=0.09 L8: F=-0.3862 var/N=0.0530 ess=0.08
+[  525    1010s] Delta=+0.0796 L16: F=-0.3899 var/N=0.1182 ess=0.09 L8: F=-0.3958 var/N=0.0483 ess=0.12
+[  550    1078s] Delta=+0.0857 L8: F=-0.3898 var/N=0.0540 ess=0.13 L16: F=-0.3969 var/N=0.0652 ess=0.10
+[  575    1135s] Delta=+0.0898 L8: F=-0.3935 var/N=0.0480 ess=0.12 L16: F=-0.3931 var/N=0.0700 ess=0.09
+[  600    1195s] Delta=+0.0947 L16: F=-0.3982 var/N=0.0495 ess=0.11 L8: F=-0.3920 var/N=0.0461 ess=0.11
+[  625    1342s] Delta=+0.1075 L8: F=-0.3723 var/N=0.0655 ess=0.07 L16: F=-0.3959 var/N=0.0457 ess=0.11 L32: F=-0.3832 var/N=0.2541 ess=0.10
+[  650    1452s] Delta=+0.1151 L32: F=-0.3786 var/N=0.3430 ess=0.08 L16: F=-0.3965 var/N=0.0462 ess=0.09 L8: F=-0.3807 var/N=0.0631 ess=0.07
+[  675    1526s] Delta=+0.1211 L16: F=-0.3951 var/N=0.0670 ess=0.08 L8: F=-0.3861 var/N=0.0575 ess=0.10 L32: F=-0.3866 var/N=0.2193 ess=0.09
+[  700    1621s] Delta=+0.1328 L32: F=-0.3777 var/N=0.8920 ess=0.08 L8: F=-0.3857 var/N=0.0550 ess=0.09 L16: F=-0.3999 var/N=0.0488 ess=0.12
+[  725    1692s] Delta=+0.1394 L16: F=-0.3961 var/N=0.0650 ess=0.08 L8: F=-0.3955 var/N=0.0428 ess=0.11 L32: F=-0.3595 var/N=0.4895 ess=0.07
+[  750    1798s] Delta=+0.1516 L8: F=-0.3840 var/N=0.0497 ess=0.12 L32: F=-0.3858 var/N=0.2547 ess=0.09 L16: F=-0.3967 var/N=0.0686 ess=0.08
+[  775    1885s] Delta=+0.1545 L8: F=-0.3963 var/N=0.0451 ess=0.12 L16: F=-0.3998 var/N=0.0407 ess=0.10 L32: F=-0.3794 var/N=2.5444 ess=0.09
+[  800    1995s] Delta=+0.1618 L8: F=-0.3911 var/N=0.0415 ess=0.15 L16: F=-0.3990 var/N=0.0487 ess=0.10 L32: F=-0.3881 var/N=0.2495 ess=0.10
+[  825    2101s] Delta=+0.1678 L32: F=-0.3867 var/N=0.4377 ess=0.09 L8: F=-0.3938 var/N=0.0431 ess=0.14 L16: F=-0.4022 var/N=0.0397 ess=0.10
+[  850    2206s] Delta=+0.1748 L32: F=-0.3872 var/N=0.2274 ess=0.08 L8: F=-0.3879 var/N=0.0482 ess=0.11 L16: F=-0.4015 var/N=0.0348 ess=0.12
+[  875    2314s] Delta=+0.1804 L16: F=-0.4018 var/N=0.0520 ess=0.11 L8: F=-0.3966 var/N=0.0461 ess=0.13 L32: F=-0.3922 var/N=0.1563 ess=0.10
+[  900    2410s] Delta=+0.1842 L8: F=-0.3968 var/N=0.0442 ess=0.11 L32: F=-0.3910 var/N=0.3077 ess=0.09 L16: F=-0.4039 var/N=0.0281 ess=0.14
+[  925    2538s] Delta=+0.1902 L8: F=-0.3948 var/N=0.0368 ess=0.16 L32: F=-0.3975 var/N=0.1374 ess=0.11 L16: F=-0.4039 var/N=0.0299 ess=0.12
+[  950    2623s] Delta=+0.1903 L16: F=-0.4039 var/N=0.0331 ess=0.11 L32: F=-0.3957 var/N=0.1486 ess=0.10 L8: F=-0.3997 var/N=0.0470 ess=0.12
+[  975    2703s] Delta=+0.1922 L32: F=-0.3866 var/N=0.2482 ess=0.07 L16: F=-0.4043 var/N=0.0343 ess=0.13 L8: F=-0.4046 var/N=0.0407 ess=0.16
+[ 1000    2802s] Delta=+0.1982 L32: F=-0.3892 var/N=0.2901 ess=0.08 L16: F=-0.4034 var/N=0.0364 ess=0.14 L8: F=-0.4014 var/N=0.0366 ess=0.15
+[ 1025    2921s] Delta=+0.2026 L32: F=-0.3991 var/N=0.1415 ess=0.09 L16: F=-0.4052 var/N=0.0371 ess=0.14 L8: F=-0.3993 var/N=0.0411 ess=0.16
+[ 1050    3030s] Delta=+0.2042 L32: F=-0.3941 var/N=0.8509 ess=0.09 L16: F=-0.4054 var/N=0.0334 ess=0.11 L8: F=-0.4020 var/N=0.0418 ess=0.15
+[ 1075    3130s] Delta=+0.2060 L32: F=-0.3967 var/N=0.0971 ess=0.08 L8: F=-0.4004 var/N=0.0437 ess=0.13 L16: F=-0.4041 var/N=0.0271 ess=0.10
+[ 1100    3224s] Delta=+0.2097 L8: F=-0.4036 var/N=0.0371 ess=0.15 L16: F=-0.4053 var/N=0.0331 ess=0.16 L32: F=-0.3978 var/N=0.1032 ess=0.10
+[ 1125    3341s] Delta=+0.2125 L8: F=-0.4029 var/N=0.0365 ess=0.17 L32: F=-0.4000 var/N=0.0608 ess=0.09 L16: F=-0.4069 var/N=0.0290 ess=0.15
+[ 1150    3444s] Delta=+0.2139 L16: F=-0.4062 var/N=0.0230 ess=0.12 L32: F=-0.3987 var/N=0.1200 ess=0.07 L8: F=-0.4057 var/N=0.0351 ess=0.17
+[ 1175    3575s] Delta=+0.2167 L16: F=-0.4053 var/N=0.0292 ess=0.13 L8: F=-0.4012 var/N=0.0319 ess=0.21 L32: F=-0.4003 var/N=0.1638 ess=0.09
+[ 1200    3686s] Delta=+0.2183 L16: F=-0.4049 var/N=0.0480 ess=0.12 L8: F=-0.4052 var/N=0.0368 ess=0.19 L32: F=-0.3971 var/N=0.2748 ess=0.09
+[ 1225    3791s] Delta=+0.2200 L32: F=-0.3991 var/N=0.1695 ess=0.10 L16: F=-0.4072 var/N=0.0274 ess=0.17 L8: F=-0.4060 var/N=0.0347 ess=0.15
+[ 1250    3882s] Delta=+0.2213 L8: F=-0.4077 var/N=0.0298 ess=0.20 L16: F=-0.4055 var/N=0.0618 ess=0.14 L32: F=-0.3986 var/N=0.1082 ess=0.09
+[ 1275    3980s] Delta=+0.2230 L8: F=-0.4087 var/N=0.0319 ess=0.20 L32: F=-0.4009 var/N=0.0896 ess=0.11 L16: F=-0.4076 var/N=0.0266 ess=0.12
+[ 1300    4104s] Delta=+0.2251 L32: F=-0.4000 var/N=0.3285 ess=0.12 L8: F=-0.4079 var/N=0.0325 ess=0.17 L16: F=-0.4060 var/N=0.0399 ess=0.15
+[ 1325    4213s] Delta=+0.2260 L32: F=-0.4021 var/N=0.0637 ess=0.09 L8: F=-0.4085 var/N=0.0310 ess=0.23 L16: F=-0.4076 var/N=0.0270 ess=0.14
+[ 1350    4330s] Delta=+0.2270 L16: F=-0.4069 var/N=0.0321 ess=0.15 L8: F=-0.4083 var/N=0.0344 ess=0.20 L32: F=-0.4025 var/N=0.0894 ess=0.11
+[ 1375    4421s] Delta=+0.2278 L8: F=-0.4090 var/N=0.0315 ess=0.21 L32: F=-0.4026 var/N=0.0631 ess=0.12 L16: F=-0.4073 var/N=0.0280 ess=0.13
+[ 1400    4552s] Delta=+0.2287 L32: F=-0.4021 var/N=0.1184 ess=0.10 L8: F=-0.4093 var/N=0.0302 ess=0.20 L16: F=-0.4078 var/N=0.0245 ess=0.17
+[ 1425    4686s] Delta=+0.2300 L16: F=-0.4076 var/N=0.0214 ess=0.16 L32: F=-0.4045 var/N=0.0453 ess=0.11 L8: F=-0.4061 var/N=0.0328 ess=0.16
+[ 1450    4789s] Delta=+0.2301 L32: F=-0.4011 var/N=0.2040 ess=0.09 L8: F=-0.4075 var/N=0.0318 ess=0.21 L16: F=-0.4082 var/N=0.0216 ess=0.19
+[ 1475    4884s] Delta=+0.2302 L8: F=-0.4115 var/N=0.0302 ess=0.23 L16: F=-0.4081 var/N=0.0292 ess=0.13 L32: F=-0.4021 var/N=0.0803 ess=0.10
+[ 1500    4999s] Delta=+0.2307 L8: F=-0.4124 var/N=0.0286 ess=0.29 L32: F=-0.4032 var/N=0.0479 ess=0.10 L16: F=-0.4083 var/N=0.0214 ess=0.15
+[ 1525    5075s] Delta=+0.2315 L8: F=-0.4090 var/N=0.0308 ess=0.24 L32: F=-0.3986 var/N=0.5664 ess=0.09 L16: F=-0.4071 var/N=0.0220 ess=0.17
+[ 1550    5172s] Delta=+0.2320 L16: F=-0.4065 var/N=0.0228 ess=0.17 L32: F=-0.4004 var/N=0.1210 ess=0.11 L8: F=-0.4101 var/N=0.0277 ess=0.26
+[ 1575    5267s] Delta=+0.2319 L32: F=-0.4007 var/N=0.1459 ess=0.09 L8: F=-0.4119 var/N=0.0290 ess=0.29 L16: F=-0.4087 var/N=0.0270 ess=0.22
+[ 1600    5368s] Delta=+0.2325 L16: F=-0.4083 var/N=0.0222 ess=0.21 L32: F=-0.4002 var/N=0.2904 ess=0.11 L8: F=-0.4101 var/N=0.0304 ess=0.23
+[ 1625    5456s] Delta=+0.2329 L16: F=-0.4090 var/N=0.0224 ess=0.14 L32: F=-0.4026 var/N=0.1269 ess=0.11 L8: F=-0.4115 var/N=0.0260 ess=0.26
+[ 1650    5572s] Delta=+0.2331 L32: F=-0.4011 var/N=0.1459 ess=0.09 L16: F=-0.4092 var/N=0.0741 ess=0.15 L8: F=-0.4115 var/N=0.0286 ess=0.25
+[ 1675    5650s] Delta=+0.2337 L8: F=-0.4099 var/N=0.0278 ess=0.24 L16: F=-0.4076 var/N=0.0371 ess=0.14 L32: F=-0.4045 var/N=0.0243 ess=0.12
+[ 1700    5760s] Delta=+0.2336 L8: F=-0.4105 var/N=0.0281 ess=0.26 L16: F=-0.4085 var/N=0.0216 ess=0.17 L32: F=-0.4013 var/N=0.1565 ess=0.13
+[ 1725    5860s] Delta=+0.2339 L32: F=-0.4036 var/N=0.0805 ess=0.09 L8: F=-0.4104 var/N=0.0278 ess=0.24 L16: F=-0.4086 var/N=0.0209 ess=0.19
+[ 1750    5968s] Delta=+0.2339 L16: F=-0.4092 var/N=0.0197 ess=0.19 L32: F=-0.4019 var/N=0.1437 ess=0.09 L8: F=-0.4083 var/N=0.0339 ess=0.22
+[ 1775    6057s] Delta=+0.2340 L8: F=-0.4096 var/N=0.0294 ess=0.21 L32: F=-0.4029 var/N=0.2184 ess=0.10 L16: F=-0.4103 var/N=0.0248 ess=0.13
+[ 1800    6170s] Delta=+0.2342 L8: F=-0.4106 var/N=0.0273 ess=0.24 L32: F=-0.4019 var/N=0.1018 ess=0.09 L16: F=-0.4114 var/N=0.0296 ess=0.16
+[ 1825    6281s] Delta=+0.2345 L32: F=-0.4030 var/N=0.1164 ess=0.11 L16: F=-0.4079 var/N=0.0250 ess=0.13 L8: F=-0.4115 var/N=0.0266 ess=0.22
+[ 1850    6381s] Delta=+0.2347 L32: F=-0.4025 var/N=0.2495 ess=0.11 L16: F=-0.4092 var/N=0.0204 ess=0.17 L8: F=-0.4109 var/N=0.0280 ess=0.25
+[ 1875    6470s] Delta=+0.2347 L8: F=-0.4125 var/N=0.0269 ess=0.29 L16: F=-0.4090 var/N=0.0232 ess=0.15 L32: F=-0.4037 var/N=0.0505 ess=0.09
+[ 1900    6555s] Delta=+0.2346 L32: F=-0.4033 var/N=0.0659 ess=0.11 L16: F=-0.4098 var/N=0.0201 ess=0.17 L8: F=-0.4104 var/N=0.0291 ess=0.21
+[ 1925    6649s] Delta=+0.2346 L8: F=-0.4110 var/N=0.0288 ess=0.22 L16: F=-0.4087 var/N=0.0285 ess=0.18 L32: F=-0.4046 var/N=0.0325 ess=0.10
+[ 1950    6734s] Delta=+0.2346 L16: F=-0.4089 var/N=0.0258 ess=0.18 L8: F=-0.4107 var/N=0.0292 ess=0.24 L32: F=-0.4036 var/N=0.0461 ess=0.12
+[ 1975    6838s] Delta=+0.2346 L16: F=-0.4103 var/N=0.0273 ess=0.21 L8: F=-0.4116 var/N=0.0271 ess=0.28 L32: F=-0.4008 var/N=0.1337 ess=0.09
+[ 2000    6942s] Delta=+0.2349 L32: F=-0.4034 var/N=0.1301 ess=0.09 L8: F=-0.4107 var/N=0.0256 ess=0.25 L16: F=-0.4090 var/N=0.0234 ess=0.14
+{"L": 8, "ode_steps": 16, "varlogw_N": 0.03016259474767032, "ess": 0.1704693729491589, "sec_per_sample": 0.013327703578397632} U= [0.5869170417825704, 0.005600882173586556] chi= [11.74015346835829, 0.30613377295591265]
+{"L": 16, "ode_steps": 32, "varlogw_N": 0.026275634204162557, "ess": 0.04879618444779091, "sec_per_sample": 0.17099950555711985} U= [0.606837899742834, 0.005639742118387672] chi= [39.63425509691688, 2.260577044475816]
+{"L": 32, "ode_steps": 32, "varlogw_N": 0.12836997665715794, "ess": 0.0020205163852676103, "sec_per_sample": 0.9572451100684702} U= [0.6659594512478663, 0.014510314663926322] chi= [203.91171935879555, 60.53386132354125]
+{"L": 48, "ode_steps": 32, "varlogw_N": 0.4524465716000934, "ess": 0.005338527969719173, "sec_per_sample": 2.342817345634103} U= [0.1698056851957611, 0.6461258276140361] chi= [78.08802423500552, 213.43279312884485]
+{"L": 64, "ode_steps": 32, "varlogw_N": 2.168900980242575, "ess": 0.014929356553866615, "sec_per_sample": 5.0549117755144835} U= [0.6645038029307675, 0.0023348678208204195] chi= [341.0339995847864, 37.979478606173515]
+E0925 07:19:15.816840    2698 slow_operation_alarm.cc:73] Constant folding an instruction is taking > 1s:
+
+  %dot.397 = f64[16384,32]{1,0} dot(%constant.1273, %constant.656), lhs_contracting_dims={1}, rhs_contracting_dims={0}, metadata={op_name="jit(f)/while/body/closed_call/dot_general" stack_frame_id=729}
+
+This isn't necessarily a bug; constant-folding is inherently a trade-off between compilation time and speed at runtime. XLA has some guards that attempt to keep constant folding from taking too long, but fundamentally you'll always be able to come up with an input program that takes a long time.
+
+If you'd like to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+E0925 07:19:15.957553    2696 slow_operation_alarm.cc:140] The operation took 1.140846582s
+Constant folding an instruction is taking > 1s:
+
+  %dot.397 = f64[16384,32]{1,0} dot(%constant.1273, %constant.656), lhs_contracting_dims={1}, rhs_contracting_dims={0}, metadata={op_name="jit(f)/while/body/closed_call/dot_general" stack_frame_id=729}
+
+This isn't necessarily a bug; constant-folding is inherently a trade-off between compilation time and speed at runtime. XLA has some guards that attempt to keep constant folding from taking too long, but fundamentally you'll always be able to come up with an input program that takes a long time.
+
+If you'd like to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+{"L": 128, "ode_steps": 64, "varlogw_N": 11.8024089741585, "ess": 0.015625, "sec_per_sample": 47.38696368038654} U= [0.6666666666666667, 0.02836463569067207] chi= [444.6314773854354, 363.02242468633034]
